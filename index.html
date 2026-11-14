@@ -1,65 +1,215 @@
 <!DOCTYPE html>
-<!-- УРОК 1. Это целая веб-страница. Сайт = набор таких файлов. -->
+<!-- УРОК 2. Страница из нескольких секций: меню-якоря, переменные цвета, сетка, адаптация под телефон. -->
 <html lang="ru">
 <head>
-  <!-- HEAD: служебная часть. Её не видно на странице. -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Репетитор по биологии</title>
+  <title>Марат: репетитор по биологии</title>
 
   <style>
-    /* CSS: правила оформления. Формат: что { свойство: значение; } */
+    /* 1. ПЕРЕМЕННЫЕ. Цвета записаны один раз вверху, дальше используем var(имя).
+          Захотите поменять палитру на всём сайте: правите только здесь. */
+    :root {
+      --text: #10302b;
+      --green: #006400;      /* главный цвет: кнопка, акценты */
+      --bg-1: #f7f5ee;       /* кремовый: общий фон */
+      --bg-2: #eaf2dc;       /* светло-зелёный: секции */
+      --bg-3: #f1ecdc;       /* песочный: чередуем с зелёным */
+      --bg-4: #e3eedd;       /* мятный */
+    }
+
+    /* 2. ПЛАВНАЯ ПРОКРУТКА: при нажатии на пункт меню страница скользит к нужному месту */
+    html { scroll-behavior: smooth; }
+
     body {
-      font-family: Arial, sans-serif;   /* шрифт */
-      background: #f7f5ee;              /* цвет фона страницы */
-      color: #10302b;                   /* цвет текста */
-      max-width: 640px;                 /* ширина колонки */
-      margin: 0 auto;                   /* центрируем колонку */
-      padding: 24px;                    /* отступ от краёв */
+      font-family: Arial, sans-serif;
+      background: var(--bg-1);
+      color: var(--text);
+      margin: 0;
+      line-height: 1.6;                 /* расстояние между строками: текст читается легче */
     }
-    h1 { font-size: 36px; }             /* главный заголовок */
-    .card {                             /* точка = свой класс оформления */
-      background: #eaf2dc;
-      padding: 16px 20px;
-      border-radius: 16px;              /* скругление углов */
-      margin-bottom: 16px;
+
+    /* 3. КОЛОНКА: каждая секция держит содержимое по центру */
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 40px 24px;
     }
+
+    /* 4. МЕНЮ: прилипает к верху экрана при прокрутке */
+    nav {
+      position: sticky;
+      top: 0;
+      background: var(--bg-1);
+      border-bottom: 1px solid #d8d4c4;
+      z-index: 10;
+    }
+    nav .wrap {
+      padding: 12px 24px;
+      display: flex;                    /* flex: элементы в ряд */
+      gap: 20px;                        /* расстояние между пунктами */
+      flex-wrap: wrap;                  /* на узком экране переносятся на новую строку */
+    }
+    nav a {
+      color: var(--green);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    /* 5. СЕКЦИИ: у каждой свой оттенок фона, цвета близкие, глаз не устаёт */
+    section.s1 { background: var(--bg-2); }
+    section.s2 { background: var(--bg-3); }
+    section.s3 { background: var(--bg-4); }
+    section.s4 { background: var(--bg-1); }
+
+    h1 { font-size: 36px; margin: 0 0 12px; }
+    h2 { font-size: 26px; margin: 0 0 16px; }
+
+    /* 6. ШАПКА: фото и текст рядом */
+    .hero {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .photo {                            /* настоящее фото в круге */
+      width: 140px;
+      height: 140px;
+      flex-shrink: 0;                   /* не даём кружку сжиматься */
+      border-radius: 50%;               /* 50% = идеальный круг */
+      object-fit: cover;                /* фото заполняет круг без искажений, лишнее обрезается */
+      object-position: 50% 30%;         /* какую часть фото показывать: по центру, ближе к верху (лицо) */
+    }
+
+    /* 7. КАРТОЧКИ ЦЕН: grid делит ширину на колонки поровну */
+    .prices {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));  /* сколько влезет, не уже 200px */
+      gap: 16px;
+    }
+    .price-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+    }
+    .price-card .sum {
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--green);
+    }
+
     a.button {
       display: inline-block;
-      background: #006400;
-      color: #ffffff;
+      background: var(--green);
+      color: #fff;
       padding: 12px 20px;
       border-radius: 12px;
-      text-decoration: none;            /* убираем подчёркивание */
+      text-decoration: none;
       font-weight: bold;
+    }
+
+    /* 8. АДАПТАЦИЯ: правила ниже работают только на экранах уже 560px (телефоны) */
+    @media (max-width: 560px) {
+      .hero { flex-direction: column; text-align: center; }  /* фото над текстом */
+      h1 { font-size: 28px; }
     }
   </style>
 </head>
 
 <body>
-  <!-- BODY: всё, что видно на странице. Теги почти всегда парные: <тег> ... </тег> -->
 
-  <h1>Марат: репетитор по биологии</h1>   <!-- h1 = главный заголовок -->
+  <!-- МЕНЮ. href="#about" ведёт к элементу с id="about" на этой же странице -->
+  <nav>
+    <div class="wrap">
+      <a href="#about">Обо мне</a>
+      <a href="#lessons">Занятия</a>
+      <a href="#prices">Цены</a>
+      <a href="#contact">Связаться</a>
+    </div>
+  </nav>
 
-  <p>Готовлю к ОГЭ и ЕГЭ с нуля: понятно и без зубрёжки.</p>   <!-- p = абзац -->
+  <!-- section = смысловой блок страницы. class="s1" подключает свой фон из CSS -->
+  <section class="s1" id="about">
+    <div class="wrap">
+      <div class="hero">
+        <!-- img = картинка. src = имя файла, он должен лежать в репозитории рядом с index.html.
+             alt = подпись для тех, кто не видит картинку (и для поисковиков) -->
+        <img class="photo" src="photo.jpg" alt="Марат, репетитор по биологии">
+        <div>
+          <h1>Марат: репетитор по биологии</h1>
+          <p>Готовлю к ОГЭ по биологии с нуля: объясняю ясно и без заучивания.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <div class="card">      <!-- div = коробка, class подключает оформление из CSS -->
-    <h2>Обо мне</h2>
-    <ul>                  <!-- ul = список, li = пункт списка -->
-      <li>98 баллов на ЕГЭ по биологии</li>
-      <li>Золотая медаль, красный аттестат</li>
-      <li>Студент медицинского вуза</li>
-      <li>Знаю, как выглядит подготовка изнутри</li>
-    </ul>
-  </div>
+  <section class="s2">
+    <div class="wrap">
+      <h2>Результаты и опыт</h2>
+      <ul>
+        <li>98 баллов на ЕГЭ по биологии</li>
+        <li>Золотая медаль, красный аттестат</li>
+        <li>Студент Первого Московского государственного медицинского университета имени И. М. Сеченова</li>
+        <li>Знаю, как выглядит подготовка изнутри</li>
+      </ul>
+    </div>
+  </section>
 
-  <div class="card">
-    <h2>Как проходят занятия</h2>
-    <p>Короткое повторение, объяснение со схемами, задания в формате экзамена и домашнее задание.</p>
-  </div>
+  <section class="s3" id="lessons">
+    <div class="wrap">
+      <h2>Как проходят занятия</h2>
+      <p>Работаем по логике экзамена: разбираем тему на схемах, решаем задания в формате ОГЭ и анализируем типичные ошибки. После встречи вы получаете домашнюю работу, которую я проверяю и комментирую.</p>
+      <p>Занятие длится 1,5 часа. Время согласуем под ваше расписание.</p>
+    </div>
+  </section>
 
-  <!-- a = ссылка. href = куда ведёт. Здесь уже стоит ваш Telegram -->
-  <a class="button" href="https://t.me/March2707">Записаться на пробное занятие</a>
+  <section class="s4" id="prices">
+    <div class="wrap">
+      <h2>Стоимость</h2>
+      <div class="prices">
+        <div class="price-card">
+          <h3>Пробное занятие</h3>
+          <div class="sum">Бесплатно</div>
+          <p>Знакомимся, определяем уровень и составляем план.</p>
+        </div>
+        <div class="price-card">
+          <h3>Подготовка к ОГЭ</h3>
+          <div class="sum">1500 ₽</div>
+          <p>Занятие один на один, 1,5 часа.</p>
+        </div>
+        <div class="price-card">
+          <h3>Улучшение успеваемости</h3>
+          <div class="sum">1500 ₽</div>
+          <p>Подтягиваем оценки по школьной программе, 1,5 часа.</p>
+        </div>
+        <div class="price-card">
+          <h3>Разбор непонятной темы</h3>
+          <div class="sum">700 ₽</div>
+          <p>Объясняю одну тему, которая не даётся, 1 час.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ОТЗЫВЫ. Пока учеников нет, блок спрятан в комментарии (всё между знаками комментария браузер игнорирует).
+       Когда появится первый настоящий отзыв, уберите знаки комментария и вставьте текст.
+  <section class="s2">
+    <div class="wrap">
+      <h2>Отзывы</h2>
+      <div class="price-card">
+        <p>Текст отзыва ученика</p>
+        <b>Имя, результат</b>
+      </div>
+    </div>
+  </section>
+  -->
+
+  <section class="s1" id="contact">
+    <div class="wrap">
+      <h2>Записаться на бесплатное пробное занятие</h2>
+      <p>Напишите мне в Telegram, отвечу и подберём время.</p>
+      <a class="button" href="https://t.me/March2707">Записаться в Telegram</a>
+    </div>
+  </section>
 
 </body>
 </html>
