@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- УРОК 2. Страница из нескольких секций: меню-якоря, переменные цвета, сетка, адаптация под телефон. -->
+<!-- УРОК 3. Новое: карусель фото (листается пальцем), блок достижений, больше оттенков, переделанные карточки цен. -->
 <html lang="ru">
 <head>
   <meta charset="utf-8">
@@ -7,18 +7,22 @@
   <title>Марат: репетитор по биологии</title>
 
   <style>
-    /* 1. ПЕРЕМЕННЫЕ. Цвета записаны один раз вверху, дальше используем var(имя).
-          Захотите поменять палитру на всём сайте: правите только здесь. */
+    /* ПАЛИТРА. Все оттенки родственные (зелёно-кремовые), поэтому сочетаются.
+       Хотите изменить настроение сайта: меняйте значения только здесь. */
     :root {
       --text: #10302b;
+      --muted: #4f6b62;      /* приглушённый текст: для цен и подписей */
       --green: #006400;      /* главный цвет: кнопка, акценты */
-      --bg-1: #f7f5ee;       /* кремовый: общий фон */
-      --bg-2: #eaf2dc;       /* светло-зелёный: секции */
-      --bg-3: #f1ecdc;       /* песочный: чередуем с зелёным */
+      --bg-1: #f7f5ee;       /* кремовый */
+      --bg-2: #eaf2dc;       /* светло-зелёный */
+      --bg-3: #f1ecdc;       /* песочный */
       --bg-4: #e3eedd;       /* мятный */
+      --bg-5: #f3f6e8;       /* бело-салатовый */
+      --bg-6: #ebe7d3;       /* светлый хаки */
+      --gold: #c9a227;       /* золото для медали */
+      --red: #9b2335;        /* красный для аттестата */
     }
 
-    /* 2. ПЛАВНАЯ ПРОКРУТКА: при нажатии на пункт меню страница скользит к нужному месту */
     html { scroll-behavior: smooth; }
 
     body {
@@ -26,76 +30,110 @@
       background: var(--bg-1);
       color: var(--text);
       margin: 0;
-      line-height: 1.6;                 /* расстояние между строками: текст читается легче */
+      line-height: 1.6;
     }
 
-    /* 3. КОЛОНКА: каждая секция держит содержимое по центру */
-    .wrap {
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 40px 24px;
-    }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 40px 24px; }
 
-    /* 4. МЕНЮ: прилипает к верху экрана при прокрутке */
     nav {
-      position: sticky;
-      top: 0;
+      position: sticky; top: 0;
       background: var(--bg-1);
       border-bottom: 1px solid #d8d4c4;
       z-index: 10;
     }
-    nav .wrap {
-      padding: 12px 24px;
-      display: flex;                    /* flex: элементы в ряд */
-      gap: 20px;                        /* расстояние между пунктами */
-      flex-wrap: wrap;                  /* на узком экране переносятся на новую строку */
-    }
-    nav a {
-      color: var(--green);
-      text-decoration: none;
-      font-weight: bold;
-    }
+    nav .wrap { padding: 12px 24px; display: flex; gap: 20px; flex-wrap: wrap; }
+    nav a { color: var(--green); text-decoration: none; font-weight: bold; }
 
-    /* 5. СЕКЦИИ: у каждой свой оттенок фона, цвета близкие, глаз не устаёт */
+    /* Секции по очереди берут разные оттенки. Чередуем светлые и чуть темнее. */
     section.s1 { background: var(--bg-2); }
     section.s2 { background: var(--bg-3); }
     section.s3 { background: var(--bg-4); }
-    section.s4 { background: var(--bg-1); }
+    section.s4 { background: var(--bg-5); }
+    section.s5 { background: var(--bg-6); }
+    section.s6 { background: var(--bg-1); }
 
     h1 { font-size: 36px; margin: 0 0 12px; }
     h2 { font-size: 26px; margin: 0 0 16px; }
 
-    /* 6. ШАПКА: фото и текст рядом */
-    .hero {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-    }
-    .photo {                            /* настоящее фото в круге */
-      width: 140px;
-      height: 140px;
-      flex-shrink: 0;                   /* не даём кружку сжиматься */
-      border-radius: 50%;               /* 50% = идеальный круг */
-      object-fit: cover;                /* фото заполняет круг без искажений, лишнее обрезается */
-      object-position: 50% 30%;         /* какую часть фото показывать: по центру, ближе к верху (лицо) */
+    .hero { display: flex; align-items: center; gap: 24px; }
+    .photo {
+      width: 140px; height: 140px; flex-shrink: 0;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: 50% 30%;
     }
 
-    /* 7. КАРТОЧКИ ЦЕН: grid делит ширину на колонки поровну */
-    .prices {
+    /* ДОСТИЖЕНИЯ: три карточки в ряд (на узком экране сами встанут в столбик) */
+    .awards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));  /* сколько влезет, не уже 200px */
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
       gap: 16px;
     }
-    .price-card {
+    .award {
       background: #fff;
       border-radius: 16px;
       padding: 20px;
+      text-align: center;
     }
+    .badge {                            /* круглый значок над текстом */
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 30px; font-weight: bold;
+    }
+    .badge.gold  { background: var(--gold); }
+    .badge.red   { background: var(--red); }
+    .badge.green { background: var(--green); }
+    .award h3 { margin: 0 0 4px; font-size: 20px; }
+    .award p  { margin: 0; color: var(--muted); }
+
+    /* КАРУСЕЛЬ. Главный приём: scroll-snap.
+       Слайды лежат в ряд, а лента прокручивается вбок и «защёлкивается» на каждом слайде. */
+    .carousel {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;                 /* разрешаем прокрутку вбок */
+      scroll-snap-type: x mandatory;    /* защёлкиваемся по слайдам */
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 8px;
+    }
+    .slide {
+      flex: 0 0 85%;                    /* каждый слайд занимает 85% ширины: край следующего виден, это подсказка «листайте» */
+      aspect-ratio: 4 / 3;              /* пропорции 4:3, высота подстраивается сама */
+      scroll-snap-align: center;
+      border-radius: 16px;
+      /* Фон из двух слоёв: сначала картинка из --img, а если файла нет, виден градиент */
+      background: var(--img), linear-gradient(135deg, #cfe3c0, #e8e2c8);
+      background-size: cover;
+      background-position: center;
+    }
+    .arrows { display: flex; gap: 8px; margin-top: 8px; }
+    .arrows button {
+      border: 0;
+      background: var(--green);
+      color: #fff;
+      font-size: 20px;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    /* ЦЕНЫ. Название услуги крупное, цена мельче и спокойнее */
+    .prices {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .price-card { background: #fff; border-radius: 16px; padding: 20px; }
+    .price-card h3 { font-size: 22px; margin: 0 0 6px; }       /* название: крупно */
     .price-card .sum {
-      font-size: 28px;
-      font-weight: bold;
-      color: var(--green);
+      font-size: 15px;                                         /* цена: мелко */
+      color: var(--muted);
+      margin: 0 0 10px;
     }
+    .price-card p { margin: 0; }
 
     a.button {
       display: inline-block;
@@ -107,9 +145,8 @@
       font-weight: bold;
     }
 
-    /* 8. АДАПТАЦИЯ: правила ниже работают только на экранах уже 560px (телефоны) */
     @media (max-width: 560px) {
-      .hero { flex-direction: column; text-align: center; }  /* фото над текстом */
+      .hero { flex-direction: column; text-align: center; }
       h1 { font-size: 28px; }
     }
   </style>
@@ -117,22 +154,20 @@
 
 <body>
 
-  <!-- МЕНЮ. href="#about" ведёт к элементу с id="about" на этой же странице -->
   <nav>
     <div class="wrap">
       <a href="#about">Обо мне</a>
+      <a href="#awards">Достижения</a>
       <a href="#lessons">Занятия</a>
       <a href="#prices">Цены</a>
       <a href="#contact">Связаться</a>
     </div>
   </nav>
 
-  <!-- section = смысловой блок страницы. class="s1" подключает свой фон из CSS -->
   <section class="s1" id="about">
     <div class="wrap">
       <div class="hero">
-        <!-- img = картинка. src = имя файла, он должен лежать в репозитории рядом с index.html.
-             alt = подпись для тех, кто не видит картинку (и для поисковиков) -->
+        <!-- Чтобы поменять фото: загрузите в репозиторий новый файл с именем photo.jpg, он заменит старый -->
         <img class="photo" src="photo.jpg" alt="Марат, репетитор по биологии">
         <div>
           <h1>Марат: репетитор по биологии</h1>
@@ -142,15 +177,27 @@
     </div>
   </section>
 
-  <section class="s2">
+  <section class="s2" id="awards">
     <div class="wrap">
-      <h2>Результаты и опыт</h2>
-      <ul>
-        <li>98 баллов на ЕГЭ по биологии</li>
-        <li>Золотая медаль, красный аттестат</li>
-        <li>Студент Первого Московского государственного медицинского университета имени И. М. Сеченова</li>
-        <li>Знаю, как выглядит подготовка изнутри</li>
-      </ul>
+      <h2>Достижения</h2>
+      <div class="awards">
+        <div class="award">
+          <div class="badge gold">★</div>
+          <h3>Золотая медаль</h3>
+          <p>За отличное окончание школы</p>
+        </div>
+        <div class="award">
+          <div class="badge red">✓</div>
+          <h3>Красный аттестат</h3>
+          <p>Аттестат с отличием</p>
+        </div>
+        <div class="award">
+          <div class="badge green">98</div>
+          <h3>98 баллов</h3>
+          <p>На ЕГЭ по биологии</p>
+        </div>
+      </div>
+      <p>Студент Первого Московского государственного медицинского университета имени И. М. Сеченова. Знаю, как выглядит подготовка изнутри.</p>
     </div>
   </section>
 
@@ -162,7 +209,25 @@
     </div>
   </section>
 
-  <section class="s4" id="prices">
+  <!-- КАРУСЕЛЬ. Каждый .slide = один кадр. В style указано имя файла картинки.
+       Загрузите в репозиторий gallery1.jpg, gallery2.jpg, gallery3.jpg (JPG, не HEIC).
+       Чтобы добавить кадр, скопируйте строку с div и поменяйте номер. -->
+  <section class="s4" id="gallery">
+    <div class="wrap">
+      <h2>Фото</h2>
+      <div class="carousel" id="carousel">
+        <div class="slide" style="--img: url('gallery1.jpg')" role="img" aria-label="Фото 1"></div>
+        <div class="slide" style="--img: url('gallery2.jpg')" role="img" aria-label="Фото 2"></div>
+        <div class="slide" style="--img: url('gallery3.jpg')" role="img" aria-label="Фото 3"></div>
+      </div>
+      <div class="arrows">
+        <button type="button" onclick="scrollCarousel(-1)" aria-label="Назад">‹</button>
+        <button type="button" onclick="scrollCarousel(1)" aria-label="Вперёд">›</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="s5" id="prices">
     <div class="wrap">
       <h2>Стоимость</h2>
       <div class="prices">
@@ -173,25 +238,24 @@
         </div>
         <div class="price-card">
           <h3>Подготовка к ОГЭ</h3>
-          <div class="sum">1500 ₽</div>
-          <p>Занятие один на один, 1,5 часа.</p>
+          <div class="sum">1500 ₽ за занятие, 1,5 часа</div>
+          <p>Занятие один на один.</p>
         </div>
         <div class="price-card">
           <h3>Улучшение успеваемости</h3>
-          <div class="sum">1500 ₽</div>
-          <p>Подтягиваем оценки по школьной программе, 1,5 часа.</p>
+          <div class="sum">1500 ₽ за занятие, 1,5 часа</div>
+          <p>Подтягиваем оценки по школьной программе.</p>
         </div>
         <div class="price-card">
           <h3>Разбор непонятной темы</h3>
-          <div class="sum">700 ₽</div>
-          <p>Объясняю одну тему, которая не даётся, 1 час.</p>
+          <div class="sum">700 ₽ за занятие, 1 час</div>
+          <p>Объясняю одну тему, которая не даётся.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ОТЗЫВЫ. Пока учеников нет, блок спрятан в комментарии (всё между знаками комментария браузер игнорирует).
-       Когда появится первый настоящий отзыв, уберите знаки комментария и вставьте текст.
+  <!-- ОТЗЫВЫ. Блок появится, когда будут настоящие отзывы (вымышленные вставлять нельзя).
   <section class="s2">
     <div class="wrap">
       <h2>Отзывы</h2>
@@ -203,13 +267,21 @@
   </section>
   -->
 
-  <section class="s1" id="contact">
+  <section class="s6" id="contact">
     <div class="wrap">
       <h2>Записаться на бесплатное пробное занятие</h2>
       <p>Напишите мне в Telegram, отвечу и подберём время.</p>
       <a class="button" href="https://t.me/March2707">Записаться в Telegram</a>
     </div>
   </section>
+
+  <script>
+    /* JAVASCRIPT: язык «действий». Эта функция листает карусель на шаг вперёд или назад. */
+    function scrollCarousel(direction) {
+      var box = document.getElementById('carousel');          // находим ленту по id
+      box.scrollBy({ left: direction * box.clientWidth * 0.85, behavior: 'smooth' });  // сдвигаем на ширину слайда
+    }
+  </script>
 
 </body>
 </html>
