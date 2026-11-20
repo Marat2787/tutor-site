@@ -85,6 +85,74 @@
     .badge.gold  { background: var(--gold); }
     .badge.red   { background: var(--red); }
     .badge.green { background: var(--green); }
+
+    /* АНИМАЦИЯ 1: блик на золотой медали.
+       Светлая полоса (::after) едет по значку слева направо и исчезает. */
+    .badge.gold { position: relative; overflow: hidden; }
+    .badge.gold::after {
+      content: "";
+      position: absolute;
+      top: 0; left: -80%;
+      width: 50%; height: 100%;
+      background: linear-gradient(100deg, transparent, rgba(255,255,255,.75), transparent);
+      transform: skewX(-20deg);
+      animation: shine 3.5s ease-in-out infinite;   /* имя, длительность, плавность, бесконечно */
+    }
+    @keyframes shine {                  /* @keyframes = «кадры» анимации */
+      0%   { left: -80%; }
+      45%  { left: 130%; }              /* проехала насквозь */
+      100% { left: 130%; }              /* пауза до следующего блика */
+    }
+
+    /* АНИМАЦИЯ 2: книжка с красной обложкой, страницы перелистываются «от ветра» */
+    .book {
+      width: 84px; height: 64px;
+      margin: 0 auto 12px;
+      background: var(--red);           /* красная обложка */
+      border-radius: 6px;
+      padding: 5px;
+      box-sizing: border-box;
+    }
+    .pages {
+      position: relative;
+      width: 100%; height: 100%;
+      perspective: 300px;               /* глубина: даёт эффект 3D при повороте */
+    }
+    .pages .left {                      /* левая страница стоит на месте */
+      position: absolute; left: 0; top: 0;
+      width: 50%; height: 100%;
+      background: #f6efe0;
+      border-radius: 3px 0 0 3px;
+    }
+    .pages .right-base {                /* правая страница-основа: под листами, чтобы книга не пустела */
+      position: absolute; left: 50%; top: 0;
+      width: 50%; height: 100%;
+      background: #f6efe0;
+      border-radius: 0 3px 3px 0;
+    }
+    .leaf {                             /* перелистываемый лист */
+      position: absolute; left: 50%; top: 0;
+      width: 50%; height: 100%;
+      background: #fbf6ea;
+      border-radius: 0 3px 3px 0;
+      transform-origin: left center;    /* крутится вокруг корешка книги */
+      animation: flip 5s ease-in-out infinite;
+    }
+    .leaf:nth-child(3) { animation-delay: 0s;   z-index: 3; }   /* nth-child: первый, второй, третий лист */
+    .leaf:nth-child(4) { animation-delay: .3s;  z-index: 2; }   /* у каждого свой сдвиг по времени, листы идут один за другим */
+    .leaf:nth-child(5) { animation-delay: .6s;  z-index: 1; }
+    @keyframes flip {
+      0%   { transform: rotateY(0);       opacity: 1; }
+      40%  { transform: rotateY(-175deg); opacity: 1; }   /* перелистнулся налево */
+      70%  { transform: rotateY(-175deg); opacity: 1; }
+      85%  { transform: rotateY(-175deg); opacity: 0; }   /* растворился */
+      100% { transform: rotateY(0);       opacity: 0; }   /* и вернулся на место */
+    }
+
+    /* Для тех, кто в настройках телефона выключил движение: анимаций нет */
+    @media (prefers-reduced-motion: reduce) {
+      .badge.gold::after, .leaf { animation: none; }
+    }
     .award h3 { margin: 0 0 4px; font-size: 20px; }
     .award p  { margin: 0; color: var(--muted); }
 
@@ -168,7 +236,7 @@
     <div class="wrap">
       <div class="hero">
         <!-- Чтобы поменять фото: загрузите в репозиторий новый файл с именем photo.jpg, он заменит старый -->
-        <img class="photo" src="photo.jpg" alt="Марат, репетитор по биологии">
+        <img class="photo" src="photo.JPG" alt="Марат, репетитор по биологии">
         <div>
           <h1>Марат: репетитор по биологии</h1>
           <p>Готовлю к ОГЭ по биологии с нуля: объясняю ясно и без заучивания.</p>
@@ -187,12 +255,21 @@
           <p>За отличное окончание школы</p>
         </div>
         <div class="award">
-          <div class="badge red">✓</div>
+          <!-- Книжка: обложка .book, внутри .pages. Первый div = левая страница, затем три листа (.leaf) -->
+          <div class="book" aria-hidden="true">
+            <div class="pages">
+              <div class="left"></div>
+              <div class="right-base"></div>
+              <div class="leaf"></div>
+              <div class="leaf"></div>
+              <div class="leaf"></div>
+            </div>
+          </div>
           <h3>Красный аттестат</h3>
           <p>Аттестат с отличием</p>
         </div>
         <div class="award">
-          <div class="badge green">98</div>
+          <div class="badge green"><span id="score">98</span></div>
           <h3>98 баллов</h3>
           <p>На ЕГЭ по биологии</p>
         </div>
@@ -216,9 +293,9 @@
     <div class="wrap">
       <h2>Фото</h2>
       <div class="carousel" id="carousel">
-        <div class="slide" style="--img: url('gallery1.jpeg')" role="img" aria-label="Фото 1"></div>
-        <div class="slide" style="--img: url('gallery2.jpeg')" role="img" aria-label="Фото 2"></div>
-        <div class="slide" style="--img: url('gallery3.jpeg')" role="img" aria-label="Фото 3"></div>
+        <div class="slide" style="--img: url('gallery1.JPG')" role="img" aria-label="Фото 1"></div>
+        <div class="slide" style="--img: url('gallery2.JPG')" role="img" aria-label="Фото 2"></div>
+        <div class="slide" style="--img: url('gallery3.JPG')" role="img" aria-label="Фото 3"></div>
       </div>
       <div class="arrows">
         <button type="button" onclick="scrollCarousel(-1)" aria-label="Назад">‹</button>
@@ -281,6 +358,34 @@
       var box = document.getElementById('carousel');          // находим ленту по id
       box.scrollBy({ left: direction * box.clientWidth * 0.85, behavior: 'smooth' });  // сдвигаем на ширину слайда
     }
+
+    /* СЧЁТЧИК «98 баллов»: число растёт и замедляется к концу, как на силомере.
+       Запускается, когда блок попал на экран. */
+    (function () {
+      var el = document.getElementById('score');
+      var target = 98;                                   // конечное число
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!el || reduce || !('IntersectionObserver' in window)) return;   // если нельзя анимировать, остаётся 98
+
+      el.textContent = '0';
+
+      function run() {
+        var start = null, duration = 2000;               // 2000 мс = 2 секунды
+        function step(time) {
+          if (start === null) start = time;
+          var t = Math.min((time - start) / duration, 1);   // прогресс от 0 до 1
+          var eased = 1 - Math.pow(1 - t, 3);               // «замедление»: быстро в начале, медленно в конце
+          el.textContent = Math.round(eased * target);
+          if (t < 1) requestAnimationFrame(step);           // пока не дошли, считаем дальше
+        }
+        requestAnimationFrame(step);
+      }
+
+      var seen = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) { run(); seen.disconnect(); }   // запустили один раз
+      }, { threshold: 0.6 });
+      seen.observe(el);
+    })();
   </script>
 
 </body>
